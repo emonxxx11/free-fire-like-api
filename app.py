@@ -79,6 +79,7 @@ def like():
         "likes_after": after_like,
         "player": after.get('AccountInfo',{}).get('PlayerNickname',''),
         "uid": after.get('AccountInfo',{}).get('UID',0),
+        "region": server,
         "status": 1 if after_like-before_like else 2,
         
        
