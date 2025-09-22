@@ -38,7 +38,9 @@ def create_uid(uid):
     m = uid_generator_pb2.uid_generator(); m.saturn_, m.garena = int(uid), 1
     return m.SerializeToString()
 
-async def send(token, url, data):
+async def send(token, url, data, delay=0):
+    if delay > 0:
+        await asyncio.sleep(delay)
     headers =get_headers(token)
     async with aiohttp.ClientSession() as s:
         async with s.post(url, data=bytes.fromhex(data), headers=headers) as r: return await r.text() if r.status==200 else None
@@ -46,7 +48,7 @@ async def send(token, url, data):
 async def multi(uid, server, url):
     enc = encrypt_message(create_like(uid, server))
     tokens = load_tokens(server)
-    return await asyncio.gather(*[send(tokens[i%len(tokens)]['token'], url, enc) for i in range(1000)])
+    return await asyncio.gather(*[send(tokens[i%len(tokens)]['token'], url, enc, i*0.05) for i in range(200)])
 
 def get_info(enc, server, token):
     urls =URLS_INFO
